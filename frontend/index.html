@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopSmart AI - Smarter Shopping with AI</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <header class="main-header">
+        <div class="header-container">
+            <!-- Brand Logo -->
+            <div class="brand-logo" onclick="resetFilters()">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">ShopSmart AI</span>
+                    <span class="brand-tagline">Smarter Shopping with AI</span>
+                </div>
+            </div>
+
+            <!-- Search Bar with Category Dropdown -->
+            <div class="search-bar-wrapper">
+                <div class="category-select-btn" id="catDropdownTrigger">
+                    <span id="selectedCategoryText">All Categories</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                    <ul class="cat-dropdown-menu" id="catDropdownMenu">
+                        <li onclick="selectCategory('All Categories')">All Categories</li>
+                        <li onclick="selectCategory('Mobiles & Tablets')">Mobiles & Tablets</li>
+                        <li onclick="selectCategory('Laptops & Accessories')">Laptops & Accessories</li>
+                        <li onclick="selectCategory('Electronics')">Electronics</li>
+                        <li onclick="selectCategory('Fashion')">Fashion</li>
+                        <li onclick="selectCategory('Home & Kitchen')">Home & Kitchen</li>
+                        <li onclick="selectCategory('Appliances')">Appliances</li>
+                        <li onclick="selectCategory('Beauty, Health & Grooming')">Beauty & Health</li>
+                        <li onclick="selectCategory('Sports, Fitness & Outdoors')">Sports & Fitness</li>
+                        <li onclick="selectCategory('Toys, Kids & Baby')">Toys & Kids</li>
+                        <li onclick="selectCategory('Books & Stationery')">Books & Stationery</li>
+                        <li onclick="selectCategory('Automotive')">Automotive</li>
+                    </ul>
+                </div>
+                <input type="text" id="searchInput" placeholder="Search for products, brands and more..." oninput="handleSearch(this.value)">
+                <button class="search-btn" onclick="executeSearch()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+
+            <!-- Right Header Actions -->
+            <div class="header-actions">
+                <!-- Location (Clickable to Change Location) -->
+                <div class="header-action-item" onclick="openLocationModal()" title="Click to Change Delivery Location">
+                    <i class="fa-solid fa-location-dot action-icon"></i>
+                    <div class="action-text">
+                        <span class="sub-text">Deliver to</span>
+                        <span class="main-text" id="headerLocationText">Pune 411001</span>
+                    </div>
+                </div>
+
+                <!-- Account / Login ID (Clickable to Edit/Switch Login ID) -->
+                <div class="header-action-item" onclick="openAccountModal()" title="Click to View/Change Login ID & Profile">
+                    <i class="fa-regular fa-user action-icon"></i>
+                    <div class="action-text">
+                        <span class="sub-text" id="headerUserGreeting">Hello, Omprakash</span>
+                        <span class="main-text">Account & Orders <i class="fa-solid fa-chevron-down tiny-arrow"></i></span>
+                    </div>
+                </div>
+
+                <!-- Cart Button -->
+                <div class="header-action-item cart-btn" onclick="toggleCartDrawer()">
+                    <div class="cart-icon-wrapper">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="cart-badge" id="cartBadgeCount">3</span>
+                    </div>
+                    <span class="cart-text">Cart</span>
+                </div>
+
+                <!-- AI Demand Dashboard Button -->
+                <button class="ai-dashboard-btn" onclick="openForecastModal()">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>AI Forecast</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN BODY LAYOUT (Sidebar + Main Content) -->
+    <div class="page-container">
+        
+        <!-- SIDEBAR CATEGORIES (Sticky) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-bars"></i>
+                <span>All Categories</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active" onclick="filterBySidebar('All Categories', this)">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>All Products</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Mobiles & Tablets', this)">
+                    <i class="fa-solid fa-mobile-screen"></i>
+                    <span>Mobiles & Tablets</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Laptops & Accessories', this)">
+                    <i class="fa-solid fa-laptop"></i>
+                    <span>Laptops & Accessories</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Electronics', this)">
+                    <i class="fa-solid fa-headphones"></i>
+                    <span>Electronics</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Fashion', this)">
+                    <i class="fa-solid fa-shirt"></i>
+                    <span>Fashion</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Home & Kitchen', this)">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home & Kitchen</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Appliances', this)">
+                    <i class="fa-solid fa-blender"></i>
+                    <span>Appliances</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Beauty, Health & Grooming', this)">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Beauty, Health & Grooming</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Sports, Fitness & Outdoors', this)">
+                    <i class="fa-solid fa-dumbbell"></i>
+                    <span>Sports, Fitness & Outdoors</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Toys, Kids & Baby', this)">
+                    <i class="fa-solid fa-shapes"></i>
+                    <span>Toys, Kids & Baby</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Books & Stationery', this)">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Books & Stationery</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('Automotive', this)">
+                    <i class="fa-solid fa-car"></i>
+                    <span>Automotive</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+                <li onclick="filterBySidebar('More Categories', this)">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span>More Categories</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
+
+            <!-- SEARCH & FILTERED RESULTS VIEW (Shown when searching or category tapping) -->
+            <section class="section-container" id="searchResultsSection" style="display:none;">
+                <div class="section-header">
+                    <div class="section-title-wrap">
+                        <i class="fa-solid fa-filter" style="color:var(--brand-accent); font-size:20px;"></i>
+                        <div>
+                            <h2 id="searchResultsTitle">Search Results</h2>
+                            <p id="searchResultsSubtitle" style="font-size:12px; color:#64748b; margin:0;">Showing matching products</p>
+                        </div>
+                    </div>
+                    <button class="clear-search-btn" onclick="resetFilters()">
+                        <i class="fa-solid fa-rotate-left"></i> Show All Home Products
+                    </button>
+                </div>
+                <div class="product-grid" id="searchGrid">
+                    <!-- Dynamic filtered items -->
+                </div>
+            </section>
+
+            <!-- HERO BANNER SECTION (Home View) -->
+            <section class="hero-grid" id="heroSection">
+                <!-- Large Carousel Banner -->
+                <div class="hero-carousel">
+                    <button class="carousel-nav prev" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="carousel-slides">
+                        <div class="carousel-slide active">
+                            <div class="slide-content">
+                                <div class="brand-badge-small">
+                                    <i class="fa-brands fa-apple"></i> iPhone 15
+                                </div>
+                                <h1 class="slide-headline">A leap ahead.</h1>
+                                <p class="slide-subtext">Powerful. Beautiful. Built for what's next.</p>
+                                <button class="shop-now-btn" onclick="filterBySidebar('Mobiles & Tablets')">Shop Now <i class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                            <div class="slide-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80" alt="iPhone 15">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-nav next" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
+                    <div class="carousel-indicators">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+
+                <!-- Right Side Promo Banners -->
+                <div class="hero-promos">
+                    <!-- Top Promo: Laptops -->
+                    <div class="promo-card promo-laptop">
+                        <div class="promo-text">
+                            <h3>Laptops for Higher Productivity</h3>
+                            <a href="#dealsSection" onclick="filterBySidebar('Laptops & Accessories')" class="promo-link">Shop Laptops <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=350&auto=format&fit=crop&q=80" alt="Laptops">
+                    </div>
+                    <!-- Bottom Promo: Fashion -->
+                    <div class="promo-card promo-fashion">
+                        <div class="promo-text">
+                            <h3>Fashion for Every You</h3>
+                            <p class="promo-sub">Trendy styles | Top brands</p>
+                            <a href="#dealsSection" onclick="filterBySidebar('Fashion')" class="promo-link">Shop Fashion <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=350&auto=format&fit=crop&q=80" alt="Fashion">
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRUST & BENEFIT STRIP -->
+            <section class="trust-strip" id="trustSection">
+                <div class="trust-item">
+                    <div class="trust-icon blue"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="trust-info">
+                        <h4>Free Delivery</h4>
+                        <p>On every order</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon green"><i class="fa-solid fa-box"></i></div>
+                    <div class="trust-info">
+                        <h4>Easy Returns</h4>
+                        <p>7-day return policy</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon red"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="trust-info">
+                        <h4>Secure Payments</h4>
+                        <p>100% safe & secure</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon purple"><i class="fa-solid fa-microchip"></i></div>
+                    <div class="trust-info">
+                        <h4>AI Recommendations</h4>
+                        <p>Personalized for you</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon yellow"><i class="fa-solid fa-tag"></i></div>
+                    <div class="trust-info">
+                        <h4>Best Prices</h4>
+                        <p>Everyday low prices</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TOP DEALS OF THE DAY -->
+            <section class="section-container" id="dealsSection">
+                <div class="section-header">
+                    <div class="section-title-wrap">
+                        <h2>Top Deals of the Day</h2>
+                        <div class="deal-countdown">
+                            <span>Ends in</span>
+                            <span class="countdown-badge" id="countdownTimer">08 : 24 : 15</span>
+                        </div>
+                    </div>
+                    <a href="javascript:void(0)" class="view-all-link" onclick="filterBySidebar('All Categories')">View All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div class="product-grid" id="topDealsGrid">
+                    <!-- Populated dynamically by JS -->
+                </div>
+            </section>
+
+            <!-- SHOP BY CATEGORY -->
+            <section class="section-container">
+                <div class="section-header">
+                    <h2>Shop by Category</h2>
+                    <a href="javascript:void(0)" class="view-all-link" onclick="filterBySidebar('All Categories')">View All Categories <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="category-cards-grid">
+                    <div class="cat-pill-card" onclick="filterBySidebar('Mobiles & Tablets')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=150&auto=format&fit=crop&q=70" alt="Mobiles">
+                        </div>
+                        <span>Mobiles</span>
+                    </div>
+                    <div class="cat-pill-card" onclick="filterBySidebar('Laptops & Accessories')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=150&auto=format&fit=crop&q=70" alt="Laptops">
+                        </div>
+                        <span>Laptops</span>
+                    </div>
+                    <div class="cat-pill-card" onclick="filterBySidebar('Electronics')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=150&auto=format&fit=crop&q=70" alt="Electronics">
+                        </div>
+                        <span>Electronics</span>
+                    </div>
+                    <div class="cat-pill-card" onclick="filterBySidebar('Fashion')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=150&auto=format&fit=crop&q=70" alt="Fashion">
+                        </div>
+                        <span>Fashion</span>
+                    </div>
+                    <div class="cat-pill-card" onclick="filterBySidebar('Home & Kitchen')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1585659722983-3a675dabf23d?w=150&auto=format&fit=crop&q=70" alt="Home & Kitchen">
+                        </div>
+                        <span>Home & Kitchen</span>
+                    </div>
+                    <div class="cat-pill-card" onclick="filterBySidebar('Appliances')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=150&auto=format&fit=crop&q=70" alt="Appliances">
+                        </div>
+                        <span>Appliances</span>
+                    </div>
+                    <div class="cat-pill-card" onclick="filterBySidebar('Beauty, Health & Grooming')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=150&auto=format&fit=crop&q=70" alt="Beauty">
+                        </div>
+                        <span>Beauty</span>
+                    </div>
+                    <div class="cat-pill-card" onclick="filterBySidebar('Sports, Fitness & Outdoors')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=150&auto=format&fit=crop&q=70" alt="Sports">
+                        </div>
+                        <span>Sports</span>
+                    </div>
+                    <div class="cat-pill-card" onclick="filterBySidebar('Toys, Kids & Baby')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=150&auto=format&fit=crop&q=70" alt="Toys & Kids">
+                        </div>
+                        <span>Toys & Kids</span>
+                    </div>
+                    <div class="cat-pill-card" onclick="filterBySidebar('Books & Stationery')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=150&auto=format&fit=crop&q=70" alt="Books">
+                        </div>
+                        <span>Books</span>
+                    </div>
+                    <div class="cat-pill-card" onclick="filterBySidebar('Automotive')">
+                        <div class="cat-pill-img">
+                            <img src="https://images.unsplash.com/photo-1578844251758-2f71da64c96f?w=150&auto=format&fit=crop&q=70" alt="Automotive">
+                        </div>
+                        <span>Automotive</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI RECOMMENDED FOR YOU -->
+            <section class="section-container">
+                <div class="section-header">
+                    <div class="ai-header-title">
+                        <div class="ai-sparkle-icon">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div>
+                            <h2>AI Recommended for You</h2>
+                            <p class="ai-sub">Based on your browsing and order history</p>
+                        </div>
+                    </div>
+                    <a href="javascript:void(0)" class="view-all-link" onclick="filterBySidebar('All Categories')">View All Recommendations <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div class="product-grid" id="aiRecommendationsGrid">
+                    <!-- Populated dynamically by JS -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- CART SLIDE-OVER DRAWER -->
+    <div class="cart-drawer-overlay" id="cartOverlay" onclick="toggleCartDrawer()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-drawer-header">
+            <h3><i class="fa-solid fa-cart-shopping"></i> Your Shopping Cart (<span id="cartItemCountHeader">3</span>)</h3>
+            <button class="close-drawer-btn" onclick="toggleCartDrawer()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-drawer-body" id="cartItemsList">
+            <!-- Populated via JS -->
+        </div>
+        <div class="cart-drawer-footer">
+            <div class="cart-summary-row">
+                <span>Subtotal</span>
+                <span class="subtotal-amount" id="cartSubtotal">₹5,597</span>
+            </div>
+            <div class="cart-summary-row discount">
+                <span>Delivery Charges</span>
+                <span class="free-text">FREE</span>
+            </div>
+            <div class="cart-summary-row total">
+                <span>Total Amount</span>
+                <span class="total-amount" id="cartTotal">₹5,597</span>
+            </div>
+            <button class="checkout-btn" onclick="openCheckoutModal()">
+                <span>Proceed to Checkout</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- AI DEMAND & INVENTORY DASHBOARD MODAL -->
+    <div class="modal-backdrop" id="aiModalBackdrop">
+        <div class="modal-card forecast-modal">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <div class="ai-badge-icon"><i class="fa-solid fa-brain"></i></div>
+                    <div>
+                        <h2>AI Demand Forecasting &amp; Inventory Optimizer</h2>
+                        <p>Real-time machine learning predictions, stockout risk models &amp; automated reorder logic</p>
+                    </div>
+                </div>
+                <button class="close-modal-btn" onclick="closeForecastModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="aiForecastContent">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAILS MODAL -->
+    <div class="modal-backdrop" id="productDetailModalBackdrop">
+        <div class="modal-card product-detail-modal">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <span class="product-modal-badge" id="pModalBadge">Top Deal</span>
+                    <h2 id="pModalHeaderTitle">Product Details</h2>
+                </div>
+                <button class="close-modal-btn" onclick="closeProductDetailModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body product-detail-body">
+                <div class="product-detail-grid">
+                    <!-- Left: Product Image & Gallery Preview -->
+                    <div class="product-gallery-side">
+                        <div class="main-image-frame">
+                            <img id="pModalImg" src="" alt="Product Image">
+                        </div>
+                        <div class="trust-pill-group">
+                            <div class="trust-mini-pill"><i class="fa-solid fa-truck-fast"></i> Free Fast Delivery</div>
+                            <div class="trust-mini-pill"><i class="fa-solid fa-rotate-left"></i> 7 Days Replacement</div>
+                            <div class="trust-mini-pill"><i class="fa-solid fa-shield-halved"></i> 1 Year Warranty</div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Product Info, Specs, Pricing & Actions -->
+                    <div class="product-info-side">
+                        <div class="product-brand-tag" id="pModalBrand">Brand</div>
+                        <h1 class="product-detail-title" id="pModalTitle">Product Name</h1>
+                        
+                        <div class="rating-strip">
+                            <div class="rating-box">
+                                <span id="pModalRating">4.5</span> <i class="fa-solid fa-star"></i>
+                            </div>
+                            <span class="rating-count-text" id="pModalReviews">12,400 Ratings & Reviews</span>
+                            <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified Buy</span>
+                        </div>
+
+                        <div class="pricing-container">
+                            <div class="price-row">
+                                <span class="detail-current-price" id="pModalPrice">₹1,499</span>
+                                <span class="detail-original-price" id="pModalOriginalPrice">₹2,499</span>
+                                <span class="detail-discount-tag" id="pModalDiscount">40% OFF</span>
+                            </div>
+                            <div class="taxes-text">Inclusive of all taxes. EMI starts at ₹142/month.</div>
+                        </div>
+
+                        <!-- Live AI Stock & Delivery Status -->
+                        <div class="stock-status-box" id="pModalStockBox">
+                            <i class="fa-solid fa-bolt-lightning"></i>
+                            <span id="pModalStockText">In Stock • Ready for dispatch today to <strong>Pune 411001</strong></span>
+                        </div>
+
+                        <!-- Highlights & Specifications -->
+                        <div class="product-specs-section">
+                            <h4>Highlights &amp; Features</h4>
+                            <ul class="specs-list" id="pModalSpecsList">
+                                <li><i class="fa-solid fa-check"></i> High-definition crystal audio with enhanced bass algorithms</li>
+                                <li><i class="fa-solid fa-check"></i> Bluetooth 5.3 instant auto-pairing &amp; ultra-low latency</li>
+                                <li><i class="fa-solid fa-check"></i> AI Smart Recommendation Score: 98% Match</li>
+                            </ul>
+                        </div>
+
+                        <!-- Product Actions -->
+                        <div class="product-detail-actions">
+                            <button class="btn-buy-now" id="pModalBuyNowBtn" onclick="buyNowFromModal()">
+                                <i class="fa-solid fa-bolt"></i> Buy Now
+                            </button>
+                            <button class="btn-add-cart-detail" id="pModalAddToCartBtn" onclick="addFromModalToCart()">
+                                <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL WITH EXTENDED PAYMENT METHODS -->
+    <div class="modal-backdrop" id="checkoutModalBackdrop">
+        <div class="modal-card checkout-modal">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 22px; color: #4ade80;"></i>
+                    <div>
+                        <h2 style="font-size: 17px; margin: 0;">Secure 256-Bit Checkout</h2>
+                        <p style="font-size: 11.5px; color: #94a3b8; margin: 0;">Verified by ShopSmart Payments Gateway</p>
+                    </div>
+                </div>
+                <button class="close-modal-btn" onclick="closeCheckoutModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="checkoutForm" onsubmit="handlePlaceOrder(event)">
+                    <div class="form-section-title"><i class="fa-solid fa-location-dot"></i> Shipping Details</div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="custName" value="Omprakash" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="custEmail" value="omprakash@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="custPhone" value="+91 98765 43210" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Delivery Address</label>
+                        <input type="text" id="custAddress" value="Flat 402, Sunshine Heights, Hinjawadi Phase 1, Pune" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode</label>
+                        <input type="text" id="custPincode" value="411001" required>
+                    </div>
+
+                    <div class="form-section-title" style="margin-top: 18px;"><i class="fa-solid fa-credit-card"></i> Select Payment Method</div>
+                    
+                    <!-- Interactive Payment Options Selection -->
+                    <div class="payment-methods-grid">
+                        <label class="payment-option-card active" onclick="selectPaymentMethodRadio(this, 'UPI')">
+                            <input type="radio" name="payOption" value="UPI" checked>
+                            <div class="pay-icon-box"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                            <div class="pay-option-info">
+                                <strong>UPI Instant Pay</strong>
+                                <span>Google Pay, PhonePe, Paytm, BHIM</span>
+                            </div>
+                            <span class="pay-badge green">Fastest</span>
+                        </label>
+
+                        <label class="payment-option-card" onclick="selectPaymentMethodRadio(this, 'CARD')">
+                            <input type="radio" name="payOption" value="CARD">
+                            <div class="pay-icon-box"><i class="fa-regular fa-credit-card"></i></div>
+                            <div class="pay-option-info">
+                                <strong>Credit / Debit Cards</strong>
+                                <span>Visa, MasterCard, RuPay, Amex</span>
+                            </div>
+                        </label>
+
+                        <label class="payment-option-card" onclick="selectPaymentMethodRadio(this, 'NETBANKING')">
+                            <input type="radio" name="payOption" value="NETBANKING">
+                            <div class="pay-icon-box"><i class="fa-solid fa-building-columns"></i></div>
+                            <div class="pay-option-info">
+                                <strong>Net Banking</strong>
+                                <span>HDFC, ICICI, SBI, Axis &amp; 50+ banks</span>
+                            </div>
+                        </label>
+
+                        <label class="payment-option-card" onclick="selectPaymentMethodRadio(this, 'COD')">
+                            <input type="radio" name="payOption" value="COD">
+                            <div class="pay-icon-box"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                            <div class="pay-option-info">
+                                <strong>Cash on Delivery (COD)</strong>
+                                <span>Pay in cash or UPI at delivery doorstep</span>
+                            </div>
+                        </label>
+
+                        <label class="payment-option-card" onclick="selectPaymentMethodRadio(this, 'EMI')">
+                            <input type="radio" name="payOption" value="EMI">
+                            <div class="pay-icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+                            <div class="pay-option-info">
+                                <strong>No Cost EMI / Pay Later</strong>
+                                <span>ShopSmart PayLater, ZestMoney, Simpl</span>
+                            </div>
+                            <span class="pay-badge purple">0% Interest</span>
+                        </label>
+                    </div>
+
+                    <!-- UPI ID input (visible when UPI is selected) -->
+                    <div class="form-group" id="upiInputContainer" style="margin-top: 14px;">
+                        <label>Enter UPI ID (VPA)</label>
+                        <input type="text" id="upiVpa" placeholder="e.g. omprakash@okhdfcbank" value="omprakash@okaxis">
+                    </div>
+
+                    <div class="checkout-total-box">
+                        <div>
+                            <span>Total Payable Amount:</span>
+                            <small style="display:block; color:#64748b; font-size:11px;">Free shipping applied • 100% Buyer Protection</small>
+                        </div>
+                        <strong id="checkoutFinalAmount">₹5,597</strong>
+                    </div>
+                    <button type="submit" class="place-order-btn">
+                        <i class="fa-solid fa-lock"></i> Pay &amp; Confirm Order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANGE DELIVERY LOCATION MODAL -->
+    <div class="modal-backdrop" id="locationModalBackdrop">
+        <div class="modal-card location-modal">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <i class="fa-solid fa-location-crosshairs" style="font-size:22px; color:#38bdf8;"></i>
+                    <div>
+                        <h2 style="font-size:17px; margin:0;">Change Delivery Location</h2>
+                        <p style="font-size:11.5px; color:#cbd5e1; margin:0;">Select your pincode for fast delivery &amp; product availability</p>
+                    </div>
+                </div>
+                <button class="close-modal-btn" onclick="closeLocationModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="locationForm" onsubmit="handleSaveLocation(event)">
+                    <div class="form-group">
+                        <label>City / Location Name</label>
+                        <input type="text" id="locCityInput" value="Pune" placeholder="e.g. Mumbai, Bengaluru, Delhi, Pune" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode / Postal Code (6 Digits)</label>
+                        <input type="text" id="locPincodeInput" value="411001" maxlength="6" pattern="[0-9]{6}" placeholder="e.g. 411001" required>
+                    </div>
+                    <div class="popular-cities-wrap">
+                        <span class="p-city-label">Popular Locations:</span>
+                        <div class="popular-cities-pills">
+                            <span class="city-pill" onclick="quickSetLocation('Pune', '411001')">Pune 411001</span>
+                            <span class="city-pill" onclick="quickSetLocation('Mumbai', '400001')">Mumbai 400001</span>
+                            <span class="city-pill" onclick="quickSetLocation('Bengaluru', '560001')">Bengaluru 560001</span>
+                            <span class="city-pill" onclick="quickSetLocation('Delhi', '110001')">Delhi 110001</span>
+                            <span class="city-pill" onclick="quickSetLocation('Hyderabad', '500001')">Hyderabad 500001</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="save-loc-btn">
+                        <i class="fa-solid fa-check"></i> Update Delivery Location
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- USER LOGIN ID & ACCOUNT PROFILE MODAL -->
+    <div class="modal-backdrop" id="accountModalBackdrop">
+        <div class="modal-card account-modal">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <i class="fa-solid fa-circle-user" style="font-size:24px; color:#fbbf24;"></i>
+                    <div>
+                        <h2 style="font-size:17px; margin:0;">Account &amp; Login Profile</h2>
+                        <p style="font-size:11.5px; color:#cbd5e1; margin:0;">Manage user credentials, Login ID &amp; shipping profile</p>
+                    </div>
+                </div>
+                <button class="close-modal-btn" onclick="closeAccountModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="accountProfileForm" onsubmit="handleSaveAccountProfile(event)">
+                    <div class="user-avatar-preview">
+                        <div class="avatar-circle" id="userAvatarText">OP</div>
+                        <div class="avatar-info">
+                            <h4 id="userDisplayFullName">Omprakash</h4>
+                            <span id="userDisplayEmail">omprakash@example.com</span>
+                            <span class="member-tag"><i class="fa-solid fa-crown"></i> Prime Member</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>User Display Name</label>
+                        <input type="text" id="accUserName" value="Omprakash" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>User Login ID / Email</label>
+                        <input type="email" id="accUserEmail" value="omprakash@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="tel" id="accUserPhone" value="+91 98765 43210" required>
+                    </div>
+
+                    <div class="account-actions-row">
+                        <button type="submit" class="save-profile-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Profile Changes
+                        </button>
+                        <button type="button" class="switch-user-btn" onclick="quickSwitchUser()">
+                            <i class="fa-solid fa-user-plus"></i> Switch Account
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
